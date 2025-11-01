@@ -1,54 +1,54 @@
 import { useState } from "react";
 import axios from "axios";
 
-const BASE_URL = "https://your-render-api-url.onrender.com/api"; // replace with your actual backend URL
+const BASE_URL = "https://django-country-api.onrender.com/api/citizens/";
 
 export default function AddCitizen() {
-  const [formData, setFormData] = useState({ name: "", age: "" });
+  const [form, setForm] = useState({
+    first_name: "",
+    father_name: "",
+    mother_name: "",
+    home_town: "",
+    gender: "",
+  });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${BASE_URL}/citizens/`, formData);
+      await axios.post(BASE_URL, form);
       alert("Citizen added successfully!");
-      setFormData({ name: "", age: "" });
+      setForm({ first_name: "", father_name: "", mother_name: "", home_town: "", gender: "" });
     } catch (err) {
       console.error(err);
-      alert("Failed to add citizen.");
+      alert("Error adding citizen");
     }
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Add New Citizen</h1>
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-sm">
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-lg"
-          required
-        />
-        <input
-          type="number"
-          name="age"
-          placeholder="Age"
-          value={formData.age}
-          onChange={handleChange}
-          className="w-full p-2 border rounded-lg"
-          required
-        />
+    <div className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6">
+      <h2 className="text-2xl font-bold mb-4 text-center">Add New Citizen</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {["first_name", "father_name", "mother_name", "home_town", "gender"].map((field) => (
+          <input
+            key={field}
+            type="text"
+            name={field}
+            value={form[field]}
+            onChange={handleChange}
+            placeholder={field.replace("_", " ").toUpperCase()}
+            className="w-full border px-3 py-2 rounded-md focus:ring focus:ring-blue-300"
+            required
+          />
+        ))}
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
         >
-          Add Citizen
+          Submit
         </button>
       </form>
     </div>
